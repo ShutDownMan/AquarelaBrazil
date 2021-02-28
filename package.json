@@ -1,0 +1,22 @@
+{
+  "name": "aquarelabrazil",
+  "version": "1.0.0",
+  "description": "Interactive map coloring constraint problem",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShutDownMan/AquarelaBrazil.git"
+  },
+  "keywords": [
+    "MapColoring"
+  ],
+  "author": "Jedson Gabriel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShutDownMan/AquarelaBrazil/issues"
+  },
+  "homepage": "https://github.com/ShutDownMan/AquarelaBrazil#readme"
+}
