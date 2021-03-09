@@ -4,6 +4,7 @@
   "description": "Interactive map coloring constraint problem",
   "main": "index.js",
   "scripts": {
+    "start": "harp server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/ShutDownMan/AquarelaBrazil/issues"
   },
-  "homepage": "https://github.com/ShutDownMan/AquarelaBrazil#readme"
+  "homepage": "https://github.com/ShutDownMan/AquarelaBrazil#readme",
+  "dependencies": {
+    "harp": "^0.33.0"
+  }
 }
