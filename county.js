@@ -39,4 +39,18 @@ class County {
 		});
 	}
 
+	hasNeighbour(neighbourName) {
+		if(this.name === neighbourName) return true;
+		let result = false;
+
+		this.neighbours.forEach(function (neigh, index) {
+			if(neigh.name === neighbourName){
+				result = true;
+				return;
+			}
+		});
+
+		return result;
+	}
+
 }
