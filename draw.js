@@ -1,8 +1,8 @@
-async function fillCounty(county, color) {
+async function fillCounty(county, color=county.color) {
 	return new Promise(function (resolve, reject) {
 		foundElem = s.select(`#${county.name}`);
 
-		console.log(foundElem);
+		console.log(color);
 	
 		foundElem.node.style.fill = color;
 	});

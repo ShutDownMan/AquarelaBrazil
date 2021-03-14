@@ -31,8 +31,6 @@ Snap.load("/brazil.svg", function (loadedFragment) {
 	setupGraph();
 });
 
-
-
 function setupGraph() {
 	let ac = new County('BR-AC');
 	let al = new County('BR-AL');
@@ -85,20 +83,105 @@ function setupGraph() {
 	ro.addNeighbours([ac, am, mt]);
 	rr.addNeighbours([pa, am]);
 	rs.addNeighbours([sc]);
-	sc.addNeighbours([pr, sc]);
+	sc.addNeighbours([pr, rs]);
 	se.addNeighbours([ba, al]);
 	sp.addNeighbours([pr, ms, mg, rj]);
-	to.addNeighbours([mt, am, ma, pi, ba, go]);
+	to.addNeighbours([mt, pa, am, ma, pi, ba, go]);
 
 	counties.push(ac, al, am, am, ap, ba, ce, df, es, go, ma, mg, ms, mt, pa, pb, pe, pi, pr, rj, rn, ro, rr, rs, sc, se, sp, to);
 
 	counties.forEach(county => {
-		fillCounty(county, 'white');
+		fillCounty(county);
 	});
 
-	solveCounties(counties);
+	counties.sort((a, b) => {
+		return (a.neighbours.length > b.neighbours.length) ? -1 : 1;
+	})
+
+	console.log(counties);
+
+	solveNodes(counties);
 }
 
-function solveCounties(counties) {
-	
+var callingQueue = [];
+async function clock() {
+	if(callingQueue.length) {
+		(callingQueue.pop()).call();
+		console.log('pop call')
+	}
 }
+
+function solveNodes(counties, algorithm='default') {
+	/// console.log(colorSetPossible)
+
+
+	switch(algorithm) {
+		default:
+		case 'first-fit':
+			// setTimeout(() => {firstFitNode(counties[0])}, 1000);
+			callingQueue.push(() => {firstFitNodes(counties)});
+			break;
+	}
+
+	/// DEBUG
+	// fillCounty(counties[0], Colors.GRAY);
+
+}
+
+async function firstFitNodes(counties) {
+	let colorSetPossible = Object.keys(Colors);
+	let colorSetAvailable = [];
+
+	// colorSetAvailable.push(colorSetPossible[1]);
+	// counties[0].color = Colors[colorSetAvailable[0]];
+	// console.log('===');
+
+	counties.forEach(function (currentNode, index) {
+		let possibleColors = [];
+
+		do {
+			possibleColors = [...colorSetAvailable];
+
+			console.log(currentNode.name);
+
+			/// check if color available in neighbours
+			currentNode.neighbours.forEach(function (neighbourNode, index) {
+				// intersect neighbours colors with colorSetAvailable
+				console.log(possibleColors);
+				console.log(possibleColors.indexOf(neighbourNode.color));
+
+				let startInd = possibleColors.indexOf(neighbourNode.color);
+				if(startInd != -1) {
+					possibleColors.splice(startInd, 1);
+				}
+ 
+				console.log(possibleColors);
+			});
+
+			// no available colors, must add new one
+			if(!possibleColors.length) {
+				colorSetAvailable.push(Colors[colorSetPossible[colorSetAvailable.length + 1]]);
+				possibleColors.push(colorSetAvailable[colorSetAvailable.length - 1]);
+
+				console.log(possibleColors);
+				console.log('not possible! - ' + colorSetAvailable.length);
+			}
+
+		} while(!possibleColors.length); //< repeat while there are no possible colors
+
+		console.log('possible! - ' + possibleColors[0]);
+
+		/// set color for current node
+		currentNode.color = possibleColors[0];
+	});
+
+	console.log('Used colors: ' + colorSetAvailable.length);
+
+	counties.forEach(county => {
+		fillCounty(county);
+	});
+}
+
+// if(callingQueue.length) {
+// 	(callingQueue.pop()).call();
+// }
