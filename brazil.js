@@ -94,9 +94,9 @@ function setupGraph() {
 		fillCounty(county);
 	});
 	
-	counties.sort((a, b) => {
-		return (a.neighbours.length > b.neighbours.length) ? -1 : 1;
-	});
+	// counties.sort((a, b) => {
+	// 	return (a.neighbours.length > b.neighbours.length) ? -1 : 1;
+	// });
 	
 	console.log(counties);
 	
@@ -118,10 +118,13 @@ function solveNodes(counties, algorithm='default') {
 	switch(algorithm) {
 		default:
 		case 'first-fit':
-		firstFitNodes(counties);
+			firstFitNodes(counties);
 		break;
 		case 'welsh-powell':
-		welshPowellNodes(counties);
+			welshPowellNodes(counties);
+		break;
+		case 'largest-degree-ordering':
+			largestDegreeOrderingNodes(counties);
 		break;
 	}
 }
@@ -130,7 +133,7 @@ async function firstFitNodes(counties) {
 	let colorSetPossible = Object.keys(Colors);
 	let colorSetAvailable = [];
 	
-	/// foreach county in Brazil
+	/// foreach county in the map
 	counties.forEach(function (currentNode, index) {
 		function colorCounty() {
 			let possibleColors = [];
@@ -181,9 +184,9 @@ function welshPowellNodes(counties) {
 	let currentColorIndex = 1;
 	
 	/// sort by neighbour number
-	counties.sort((a, b) => {
-		return (a.neighbours.length > b.neighbours.length) ? -1 : 1;
-	});
+	// counties.sort((a, b) => {
+	// 	return (a.neighbours.length > b.neighbours.length) ? -1 : 1;
+	// });
 	
 	
 	// get highest degree uncolored
@@ -220,12 +223,63 @@ function recursiveWelshPowell(currentNode, counties, currentColorIndex) {
 	});
 	
 	console.log(countiesPrime);
-
+	
 	/// sort by neighbour number
-	countiesPrime.sort((a, b) => {
-		return (a.neighbours.length > b.neighbours.length) ? -1 : 1;
-	});
+	// countiesPrime.sort((a, b) => {
+	// 	return (a.neighbours.length > b.neighbours.length) ? -1 : 1;
+	// });
 	
 	// recursive call
 	recursiveWelshPowell(countiesPrime[0], countiesPrime, currentColorIndex);
+}
+
+function largestDegreeOrderingNodes(counties) {
+	let colorSetPossible = Object.keys(Colors);
+	let colorSetAvailable = [];
+	
+	/// foreach county in the map
+	counties.forEach(function (currentNode, index) {
+		function colorCounty() {
+			let possibleColors = [];
+			
+			do {
+				possibleColors = [...colorSetAvailable];
+				
+				console.log(currentNode.name);
+				
+				/// check if color available in neighbours
+				currentNode.neighbours.forEach(function (neighbourNode, index) {
+					// intersect neighbours colors with colorSetAvailable
+					// console.log(possibleColors);
+					// console.log(possibleColors.indexOf(neighbourNode.color));
+					
+					let startInd = possibleColors.indexOf(neighbourNode.color);
+					if(startInd != -1) {
+						possibleColors.splice(startInd, 1);
+					}
+					
+					console.log(possibleColors);
+				});
+				
+				// no available colors, must add new one
+				if(!possibleColors.length) {
+					colorSetAvailable.push(Colors[colorSetPossible[colorSetAvailable.length + 1]]);
+					possibleColors.push(colorSetAvailable[colorSetAvailable.length - 1]);
+					
+					// console.log(possibleColors);
+					// console.log('not possible! - ' + colorSetAvailable.length);
+				}
+				
+			} while(!possibleColors.length); //< repeat while there are no possible colors
+			
+			// console.log('possible! - ' + possibleColors[0]);
+			
+			/// set color for current node
+			currentNode.color = possibleColors[0];
+			fillCounty(currentNode);
+		}
+		callingQueue.push(colorCounty);
+	});
+	
+	console.log('Used colors: ' + colorSetAvailable.length);
 }
