@@ -6,7 +6,7 @@ const Tag = {
 }
 
 const Colors = {
-	WHITE: '#FFF',
+	GRAY: '#AAA',
 	RED: '#F00',
 	GREEN: '#0F0',
 	BLUE: '#00F',
@@ -23,7 +23,7 @@ class County {
 	constructor(name) {
 		this.name = name;
 		this.tag = Tag.WHITE;
-		this.color = Colors.WHITE;
+		this.color = Colors.GRAY;
 
 		this.neighbours = [];
 	}

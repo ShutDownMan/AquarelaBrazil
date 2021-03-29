@@ -2,30 +2,83 @@
 <html>
 
 <head>
-	<title>Aquarela Brazileira</title>
+	<title>Aquarela Brasileira</title>
+	
+	<link type="text/css" rel="stylesheet" charset="UTF-8" href="index.css">
 </head>
-
 <body>
-
+	
 	<div>
-		<h1>Aquarela Brazileira</h1>
-		by Jedson Gabriel
+		<h1>Aquarela Brasileira</h1>
+		by Jedson Gabriel, João Vitor
 	</div>
-
-	<div align="middle" style="background-color: black">
-		<svg id="main_canvas" width="100%" height="720"></svg>
-
-		<div><button id="clock_button" onclick="clock()">CLOCK</button></div>
+	
+	<div class="container">
+		<div class="fixed" style="background-color: white">
+			<svg id="main_canvas" width="100%" height="720"></svg>
+			
+		</div>
+		<div class="flex-item" style="color: white">
+			<div style="text-align-last: center;">
+				<button id="toggle-start-btn" onclick="toggleStart(this)">PLAY</button>
+				<button id="pause_button" onclick="reset()">RESET</button>
+				<input type="range" min="1" max="100" value="45" class="slider" id="speedRange" onmousedown="onClickSpeedRange" onchange="onChangeSpeedRange(this.value)">
+			</div>
+			
+			<br>
+			<br>
+			
+			<div id="algorithms-block" style="" class="tooltip">
+				<span class="tooltiptext">Algorithm utilized for coloring the counties.</span>
+				<label for="algorithms" style="color: black;">Algorithm:</label>
+				<select id="algorithms" name="algorithms" onchange="onChangeSelectAlgorithm(this.value)">
+					<option value="first-fit">First Fit</option>
+					<option value="welsh-powell">Welsh Powell</option>
+					<option value="bogo-coloring">Bogo Coloring</option>
+					<option value="brute-force">Brute Force</option>
+				</select>
+			</div>
+			<div id="pre-sorting" style="" class="tooltip">
+				<span class="tooltiptext">Sorting that happens before running the algorithms.</span>
+				<label for="pre-sorting-algo" style="color: black;">Pre Sorting:</label>
+				<select id="pre-sorting-algo" name="pre-sorting-algo" onchange="onChangeSelectPreSortingAlgo(this.value)">
+					<option value="default-arranged">Default Arrangement</option>
+					<option value="randomly-arranged">Randomly Arranged</option>
+					<option value="alphabetically-arranged">Alphabetically Arranged</option>
+					<option value="most-constrained">Most Constrained First</option>
+					<option value="least-constrained">Least Constrained First</option>
+				</select>
+			</div>
+			<div id="in-sorting" style="display: none;" class="tooltip">
+				<span class="tooltiptext">Sorting that happens by the algorithms.</span>
+				<label for="in-sorting-algo" style="color: black;">In Sorting:</label>
+				<select id="in-sorting-algo" name="in-sorting-algo" onchange="onChangeSelectInSortingAlgo(this.value)">
+					<option value="default-arranged">Default Arrangement</option>
+					<option value="randomly-arranged">Randomly Arranged</option>
+					<option value="alphabetically-arranged">Alphabetically Arranged</option>
+					<option value="most-constrained">Most Constrained First</option>
+					<option value="least-constrained">Least Constrained First</option>
+				</select>
+			</div>
+			<div id="log-box" class="log-box">
+			</div>
+			<div style="text-align-last: center;">
+				<div id="colors-used" class="number-box">Colors used:<br>0</div>
+				<div id="constraints-tested" class="number-box">Constraints tested:<br>0</div>
+				<div id="nodes-fetched" class="number-box">Nodes Fetched:<br>0</div>	
+			</div>
+		</div>
 	</div>
-
+	
 	<script src="/svg-pan-zoom.min.js"></script>
 	<script src="/highlight.pack.js"></script>
 	<script src="/snap.svg-min.js"></script>
 	<script src="/draw.js"></script>
 	<script src="/county.js"></script>
+	<script src="/algorithms.js"></script>
 	<script src="/brazil.js"></script>
-
-
+	
+	
 </body>
 
 </html>
