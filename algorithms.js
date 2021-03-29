@@ -3,11 +3,12 @@ async function firstFitNodes(counties) {
 	let colorSetPossible = Object.keys(Colors);
 	let colorSetAvailable = [];
 	
-	/// foreach county in the map
+	/// foreach node in the graph
 	for(let currentNode of counties) {
 		colorsUsed = await firstFitColorCounty(currentNode, colorSetPossible, colorSetAvailable);
 	}
 	
+	/// log results
 	logAlgoResult();
 }
 
@@ -17,26 +18,21 @@ function firstFitColorCounty(currentNode, colorSetPossible, colorSetAvailable) {
 			let possibleColors = [];
 			
 			do {
+				/// possible colors are all available
 				possibleColors = [...colorSetAvailable];
-				
-				console.log(currentNode.name);
 				
 				/// check if color available in neighbours
 				currentNode.neighbours.forEach(function (neighbourNode) {
 					nodesFetched++;
-					// intersect neighbours colors with colorSetAvailable
-					
-					let startInd = possibleColors.indexOf(neighbourNode.color);
-					if(startInd != -1) {
+					// remove neighbours colors from possible colors
+					let foundInd = possibleColors.indexOf(neighbourNode.color);
+					if(foundInd != -1) {
+						/// if color found, remove
 						constraintsTested++;
-						possibleColors.splice(startInd, 1);
+						possibleColors.splice(foundInd, 1);
 					}
-					
-					console.log(possibleColors);
 				});
-				
-				console.log(colorSetAvailable.length);
-				
+								
 				// no available colors, must add new one
 				if(!possibleColors.length) {
 					colorSetAvailable.push(Colors[colorSetPossible[colorSetAvailable.length + 1]]);
@@ -44,17 +40,15 @@ function firstFitColorCounty(currentNode, colorSetPossible, colorSetAvailable) {
 				}
 				
 			} while(!possibleColors.length); //< repeat while there are no possible colors
-			
-			// console.log('possible! - ' + possibleColors[0]);
-			
+						
 			/// set color for current node
 			currentNode.color = possibleColors[0];
 			fillCounty(currentNode);
 			
+			/// return with number of used colors
 			resolve(colorSetAvailable.length);
 		});
 	});
-	
 }
 
 async function welshPowellNodes(counties, inSorting='default') {
@@ -89,6 +83,7 @@ async function recursiveWelshPowell(currentNode, counties, currentColorIndex, in
 		// remove neighbours from list
 		let countiesPrime = counties.filter(function (node) {
 			nodesFetched++;
+			constraintsTested++;
 			return !(currentNode.hasNeighbour(node.name)) && (node.tag === Tag.WHITE);
 		});
 		
@@ -109,7 +104,7 @@ async function bogoColoringNodes(counties, colorLimit=9) {
 	let solved = false;
 	
 	colorsUsed = colorLimit;
-
+	
 	/// get available colors
 	for(let i = 0; i < colorLimit; ++i) {
 		colorSetAvailable.push(colorSetPossible[i + 1]);
@@ -120,6 +115,8 @@ async function bogoColoringNodes(counties, colorLimit=9) {
 	do {
 		solved = await bogoColoringIteration(counties, colorSetAvailable);
 	} while(!solved);
+	
+	logAlgoResult();
 }
 
 async function bogoColoringIteration(counties, colors) {
@@ -174,21 +171,21 @@ async function bruteForce(counties, maxColors=9) {
 	}
 	
 	colorsUsed = maxColors;
-
+	
 	let solved = false;
 	do {
 		/// try while not solved
 		solved = await bruteForceIteration(counties, colorsInd, colorSetAvailable);
 	} while(!solved);
 	
-	return counties;
+	logAlgoResult();
 }
 
 function bruteForceIteration(counties, colorsInd, colorSetAvailable) {
 	return new Promise((resolve) => {
 		callingQueue.push(() => {
 			
-			/// text next color for first node
+			/// test next color for first node
 			maxColors = colorSetAvailable.length - 1;
 			let rest = ((colorsInd[0] + 1) % maxColors === 0) ? 1 : 0;
 			colorsInd[0] += 1; colorsInd[0] %= maxColors;
