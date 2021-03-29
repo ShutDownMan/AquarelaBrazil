@@ -4,7 +4,7 @@
   "description": "Interactive map coloring constraint problem",
   "main": "index.js",
   "scripts": {
-    "start": "harp server",
+    "start": "harp server --port $PORT",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
