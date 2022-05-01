@@ -14,5 +14,4 @@ EXPOSE 3000
 
 COPY . /app
 
-# CMD ["harp server", "src", "--port $PORT"]
 CMD ["npm", "run", "start"]
